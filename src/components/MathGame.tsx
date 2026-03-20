@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Trophy, ArrowLeft, CheckCircle2, XCircle, Timer, Zap, Loader2, BrainCircuit } from 'lucide-react';
 import { Difficulty, Operation, Question, GameStats, Grade } from '../types';
 import { generateQuestion } from '../utils';
-import { explainMathError } from '../services/aiService';
 
 interface GameProps {
   difficulty: Difficulty;
@@ -23,8 +22,6 @@ export const MathGame: React.FC<GameProps> = ({ difficulty, grade, operation, on
   const [streak, setStreak] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
-  const [aiExplanation, setAiExplanation] = useState<string | null>(null);
-  const [isExplaining, setIsExplaining] = useState(false);
   const TOTAL_QUESTIONS = 20;
 
   useEffect(() => {
@@ -38,11 +35,10 @@ export const MathGame: React.FC<GameProps> = ({ difficulty, grade, operation, on
     }
     setQuestion(generateQuestion(difficulty, operation, grade));
     setFeedback(null);
-    setAiExplanation(null);
   };
 
   const handleAnswer = async (selected: string | number) => {
-    if (isGameOver || feedback || isExplaining) return;
+    if (isGameOver || feedback) return;
 
     const isCorrect = selected === question?.answer;
     const newTotal = stats.totalQuestions + 1;
@@ -62,18 +58,7 @@ export const MathGame: React.FC<GameProps> = ({ difficulty, grade, operation, on
     } else {
       setStreak(0);
       setFeedback('wrong');
-      
-      if (question) {
-        setIsExplaining(true);
-        try {
-          const explanation = await explainMathError(question, selected, grade);
-          setAiExplanation(explanation);
-        } catch (error) {
-          setAiExplanation(`La bonne réponse était ${question.answer}. Continue d'essayer ! 💪`);
-        } finally {
-          setIsExplaining(false);
-        }
-      }
+      setTimeout(nextQuestion, 1500);
     }
   };
 
@@ -211,7 +196,7 @@ export const MathGame: React.FC<GameProps> = ({ difficulty, grade, operation, on
             whileHover={{ scale: 1.02, y: -4 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => handleAnswer(option)}
-            disabled={!!feedback || isExplaining}
+            disabled={!!feedback}
             className={`
               p-6 md:p-8 rounded-xl md:rounded-[2rem] text-2xl md:text-4xl font-display transition-all border
               ${feedback === 'correct' && option === question.answer ? 'bg-accent/20 text-accent border-accent shadow-[0_0_30px_rgba(16,185,129,0.2)]' : 
@@ -226,37 +211,25 @@ export const MathGame: React.FC<GameProps> = ({ difficulty, grade, operation, on
       </div>
 
       <AnimatePresence>
-        {(isExplaining || aiExplanation) && (
+        {feedback === 'wrong' && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
-            className="mt-8 md:mt-12 glass-card p-6 md:p-10 rounded-2xl md:rounded-[3rem] border-primary/20 relative overflow-hidden"
+            className="mt-8 md:mt-12 glass-card p-6 md:p-10 rounded-2xl md:rounded-[3rem] border-rose-500/20 relative overflow-hidden"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-primary" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-rose-500" />
             <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
-              <div className="bg-primary/20 p-3 md:p-4 rounded-xl md:rounded-2xl border border-primary/30">
-                {isExplaining ? (
-                  <Loader2 className="w-6 h-6 md:w-8 md:h-8 text-primary animate-spin" />
-                ) : (
-                  <BrainCircuit className="w-6 h-6 md:w-8 md:h-8 text-primary" />
-                )}
+              <div className="bg-rose-500/20 p-3 md:p-4 rounded-xl md:rounded-2xl border border-rose-500/30">
+                <XCircle className="w-6 h-6 md:w-8 md:h-8 text-rose-500" />
               </div>
               <div className="flex-1">
                 <h4 className="font-display text-lg md:text-xl mb-2 md:mb-3 text-white">
-                  Assistant MathOS
+                  Oups !
                 </h4>
                 <div className="text-slate-400 leading-relaxed text-base md:text-lg">
-                  {aiExplanation}
+                  La bonne réponse était <span className="text-white font-bold">{question?.answer}</span>.
                 </div>
-                {aiExplanation && (
-                  <button 
-                    onClick={nextQuestion}
-                    className="mt-6 md:mt-8 bg-primary/10 text-primary px-6 md:px-8 py-2 md:py-3 rounded-lg md:rounded-xl font-bold text-xs md:text-sm flex items-center gap-3 hover:bg-primary/20 transition-colors"
-                  >
-                    Reprendre la simulation <ArrowLeft className="w-4 h-4 rotate-180" />
-                  </button>
-                )}
               </div>
             </div>
           </motion.div>

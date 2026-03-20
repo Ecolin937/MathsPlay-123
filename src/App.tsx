@@ -7,7 +7,6 @@ import { GridGame } from './components/GridGame';
 import { MemoryGame } from './components/MemoryGame';
 import { PatternGame } from './components/PatternGame';
 import { AdminPanel } from './components/AdminPanel';
-import { MathAssistant } from './components/MathAssistant';
 import { Difficulty, Operation, Grade } from './types';
 
 type GameMode = 'classic' | 'speed' | 'grid' | 'memory' | 'pattern';
@@ -193,8 +192,6 @@ export default function App() {
 
       <AnimatePresence>
       </AnimatePresence>
-
-      <MathAssistant grade={grade} />
 
       <AnimatePresence>
         {showWelcomeNotif && (
@@ -443,9 +440,9 @@ export default function App() {
                     <div className="w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-2xl md:rounded-3xl flex items-center justify-center mb-6 md:mb-8 backdrop-blur-md group-hover:scale-110 transition-transform border border-white/20">
                       <span className="text-3xl md:text-4xl">🦆</span>
                     </div>
-                    <h3 className="text-xl md:text-2xl font-display mb-2 md:mb-3">Duck Protocol IA</h3>
+                    <h3 className="text-xl md:text-2xl font-display mb-2 md:mb-3">Duck Protocol</h3>
                     <p className="text-indigo-100/60 text-xs md:text-sm mb-6 md:mb-8 leading-relaxed">
-                      Accède à la simulation neuronale externe pour un entraînement intensif aux tables par IA.
+                      Accède à la simulation neuronale externe pour un entraînement intensif aux tables.
                     </p>
                     <div className="flex items-center gap-3 font-bold text-[10px] md:text-xs uppercase tracking-widest">
                       Lancer la liaison <ArrowRight className="w-4 h-4" />
@@ -472,7 +469,6 @@ export default function App() {
                       </div>
                       <h3 className="text-xl md:text-2xl font-display mb-2 md:mb-3 text-white flex items-center gap-2">
                         {mode.name}
-                        <span className="text-[8px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-full border border-primary/30">IA</span>
                       </h3>
                       <p className="text-slate-500 text-[10px] md:text-xs leading-relaxed uppercase tracking-wider">
                         {mode.id === 'mixed' ? 'Analyse globale du programme.' : `Optimisation des ${mode.name.toLowerCase()}.`}
@@ -489,7 +485,7 @@ export default function App() {
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 mb-8">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary/20 p-2 rounded-lg"><BrainCircuit className="w-5 h-5 md:w-6 md:h-6 text-primary" /></div>
-                    <span className="font-display text-xl md:text-2xl text-white tracking-tight">Math<span className="text-primary">OS IA</span></span>
+                    <span className="font-display text-xl md:text-2xl text-white tracking-tight">Math<span className="text-primary">OS</span></span>
                   </div>
                   <div className="h-px w-12 bg-white/10 hidden md:block" />
                   <p className="text-slate-500 text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold">Droits d'auteurs : Diego HAMON BAYARD</p>
@@ -508,7 +504,7 @@ export default function App() {
                   className="mt-12 flex items-center justify-center gap-2 mx-auto text-[10px] md:text-xs text-white/40 hover:text-primary transition-all uppercase tracking-[0.3em] font-bold group bg-white/5 px-4 py-2 rounded-full border border-white/5"
                 >
                   <Sparkles className="w-3 h-3 group-hover:text-primary animate-pulse" />
-                  {showPoweredBy ? "WEB POWERED BY IA" : "•"}
+                  {showPoweredBy ? "WEB POWERED BY MATHS" : "•"}
                 </button>
               </footer>
             </motion.div>
